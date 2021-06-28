@@ -4,6 +4,10 @@
 # Log file
 *.log
 
+./server/.idea
+./server/target
+./server/.mvn
+
 # BlueJ files
 *.ctxt
 
