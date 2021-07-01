@@ -1,35 +1,50 @@
 package com.olympiads.entity;
 
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
-//@Entity
-//@Getter
-//@Setter
-//@NoArgsConstructor
+@Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
 public class Olympiad {
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
     private String title;
+
+    @Column(nullable = false, columnDefinition = "text")
     private String caption;
+
+    @Column(nullable = false)
     private String location;
+
+    @Column(nullable = false)
     private String lesson;
+
+    @Column(nullable = false)
     private String link;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     private User creator;
+
+    @OneToMany(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REFRESH,
+            mappedBy = "olympiad"
+    )
     private List<Comment> comments;
+
+    private LocalDate dateOfOlympiads;
 }

@@ -1,5 +1,6 @@
 package com.olympiads.security;
 
+import com.olympiads.entity.enums.Role;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,7 +11,8 @@ import java.util.UUID;
 @Getter
 public class JwtUser implements UserDetails {
 
-    private final UUID id;
+    private final Long id;
+    private final Role role;
     private final String name;
     private final String email;
     private final String surname;
@@ -20,7 +22,8 @@ public class JwtUser implements UserDetails {
 
 
     public JwtUser(
-            UUID id,
+            Long id,
+            Role role,
             String name,
             String email,
             String surname,
@@ -29,6 +32,7 @@ public class JwtUser implements UserDetails {
             Collection<? extends GrantedAuthority> authorities
     ) {
         this.id = id;
+        this.role = role;
         this.name = name;
         this.email = email;
         this.surname = surname;

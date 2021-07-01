@@ -26,6 +26,7 @@ public class JwtTokenProvider {
         claimsMap.put("email", user.getEmail());
         claimsMap.put("name", user.getName());
         claimsMap.put("surname", user.getSurname());
+        claimsMap.put("role", user.getRole());
 
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET)
@@ -52,12 +53,22 @@ public class JwtTokenProvider {
         }
     }
 
-    public UUID getUserIdFromToken(String token) {
+    public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SecurityConstants.SECRET)
                 .parseClaimsJws(token)
                 .getBody();
 
-        return UUID.fromString((String) claims.get("id"));
+        return Long.parseLong((String) claims.get("id"));
     }
+
+    public String getUserEmailFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(SecurityConstants.SECRET)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return (String) claims.get("email");
+    }
+
 }

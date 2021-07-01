@@ -1,7 +1,6 @@
 package com.olympiads.validation;
 
 import com.olympiads.annotation.ValidEmail;
-import org.hibernate.mapping.Constraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -19,10 +18,6 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-        return (validateEmail(email));
-    }
-
-    private boolean validateEmail(String email) {
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();

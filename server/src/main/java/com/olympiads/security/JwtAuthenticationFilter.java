@@ -1,5 +1,7 @@
 package com.olympiads.security;
 
+import com.olympiads.entity.User;
+import com.olympiads.repository.UserRepository;
 import com.olympiads.service.CustomUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -31,8 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(httpServletRequest);
 
             if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-                UUID userId = jwtTokenProvider.getUserIdFromToken(jwt);
-                JwtUser userDetails = customUserDetailsService.loadById(userId);
+                Long id = jwtTokenProvider.getUserIdFromToken(jwt);
+                JwtUser userDetails = customUserDetailsService.loadById(id);
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, Collections.emptyList()

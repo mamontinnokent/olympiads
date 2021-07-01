@@ -1,6 +1,5 @@
 package com.olympiads.annotation;
 
-import com.olympiads.validation.EmailValidator;
 import com.olympiads.validation.PasswordValidator;
 
 import javax.validation.Constraint;

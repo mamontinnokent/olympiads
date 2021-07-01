@@ -5,15 +5,11 @@ import com.olympiads.entity.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,12 +18,8 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -35,33 +27,41 @@ public class User {
     @Column(nullable = false)
     private String surname;
 
+    @Column(nullable = false)
     private String patronymic;
 
     @Column(length = 3000)
     private String password;
 
-    @Column(nullable = false)
     private String school;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String studyClass;
 
-    @Column(nullable = false)
     private String placeOfLife;
 
     @JsonFormat(pattern = "dd/mm/yyyy")
     private LocalDate birthdate;
+
     @Column(length = 500)
     private String lessons;
 
-    @ElementCollection(targetClass = Role.class)
-    @CollectionTable(name = "user_role",
-            joinColumns = @JoinColumn(columnDefinition = "user_id", referencedColumnName = "id"))
-    private Set<Role> roles = new HashSet<>();
+    @Column(nullable = false, name = "role")
+    private Role role;
 
-    @Transient
-    private Collection<? extends GrantedAuthority> authorities;
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "user",
+            orphanRemoval = true
+    )
+    private List<OlympiadForCalendar> olympiads = new ArrayList<>();
+
+    @OneToMany(
+            cascade = CascadeType.REFRESH,
+            mappedBy = "creator",
+            orphanRemoval = true
+    )
+    private List<Olympiad> createdByMe = new ArrayList<>();
 }
