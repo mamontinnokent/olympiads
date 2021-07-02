@@ -12,7 +12,7 @@ import java.util.List;
 public interface OlympiadForCalendarRepository extends JpaRepository<OlympiadForCalendar, Long> {
 
     List<OlympiadForCalendar> findAllByUser(User user);
-    List<OlympiadForCalendar> findAllByUserOrderByDateOlympiadDesc(User user);
+    List<OlympiadForCalendar> findAllByUserOrderByDateOlympiad(User user);
     void deleteById(Long id);
 
     boolean deleteAllByOlympiadId(Long id);

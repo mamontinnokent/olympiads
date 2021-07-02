@@ -57,7 +57,8 @@ public class OlympiadContoller {
         OlympiadDTO olympiadDTO = olympiad.map(olympiadFacade::olympiadToOlympiadDTO).get();
 
         if (!olympiad.isEmpty()) return new ResponseEntity<>(olympiadDTO, HttpStatus.OK);
-        else return new ResponseEntity<>(new MessageResponse("You don't have permissions or olympiad with this title already exist."), HttpStatus.BAD_REQUEST);
+        else
+            return new ResponseEntity<>(new MessageResponse("You don't have permissions or olympiad with this title already exist."), HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
@@ -73,4 +74,14 @@ public class OlympiadContoller {
         Olympiad olympiad = olympiadService.updateOlympiad(olympiadDTO, principal);
         return ResponseEntity.ok(olympiad);
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<Object> getAllOlympiadForMe(Principal principal) {
+        List<OlympiadDTO> olympiads = olympiadService.forUser(principal).stream()
+                .map(olympiadFacade::olympiadToOlympiadDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(olympiads, HttpStatus.OK);
+    }
+
 }

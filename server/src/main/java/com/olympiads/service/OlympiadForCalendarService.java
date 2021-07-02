@@ -1,51 +1,57 @@
 package com.olympiads.service;
 
-import com.olympiads.dto.OlympiadDTO;
 import com.olympiads.dto.OlympiadForCalendarDTO;
+import com.olympiads.entity.Olympiad;
 import com.olympiads.entity.OlympiadForCalendar;
 import com.olympiads.entity.User;
 import com.olympiads.repository.OlympiadForCalendarRepository;
+import com.olympiads.repository.OlympiadRepository;
 import com.olympiads.repository.UserRepository;
 import com.olympiads.utility.Utility;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 @Service
+@Slf4j
 public class OlympiadForCalendarService {
 
     private final UserRepository userRepository;
+    private final OlympiadRepository olympiadRepository;
     private final OlympiadForCalendarRepository olympiadForCalendarRepository;
 
     @Autowired
-    public OlympiadForCalendarService(UserRepository userRepository, OlympiadForCalendarRepository olympiadForCalendarRepository) {
+    public OlympiadForCalendarService(UserRepository userRepository, OlympiadRepository olympiadRepository, OlympiadForCalendarRepository olympiadForCalendarRepository) {
         this.userRepository = userRepository;
+        this.olympiadRepository = olympiadRepository;
         this.olympiadForCalendarRepository = olympiadForCalendarRepository;
     }
 
-    public void addToUser(OlympiadForCalendarDTO olympiadForCalendarDTO, Principal principal) {
+    public boolean addToUser(OlympiadForCalendarDTO olympiadForCalendarDTO, Principal principal) {
         User user = getCurrentUser(principal);
 
-        OlympiadForCalendar olympiad = new OlympiadForCalendar();
+        Olympiad olympiad = olympiadRepository.getById(olympiadForCalendarDTO.getOlympiadId());
+        OlympiadForCalendar olympiadForCalendar = new OlympiadForCalendar();
+        olympiadForCalendar.setUser(user);
+        olympiadForCalendar.setOlympiadName(olympiad.getTitle());
+        olympiadForCalendar.setDateOlympiad(olympiad.getDateOfOlympiad());
+        olympiadForCalendar.setOlympiadId(olympiad.getId());
 
-        olympiad.setUser(user);
-        olympiad.setOlympiadName(olympiadForCalendarDTO.getOlympiadName());
-        olympiad.setDateOlympiad(Utility.stringToTimestamp(olympiadForCalendarDTO.getDateOlympiad()));
-        olympiad.setOlympiadId(olympiadForCalendarDTO.getOlympiadId());
+        if (olympiadForCalendarRepository.findAllByUser(user).add(olympiadForCalendar)) {
+            olympiadForCalendarRepository.save(olympiadForCalendar);
+            return true;
+        }
 
-        olympiadForCalendarRepository.save(olympiad);
+        return false;
     }
 
     public List<OlympiadForCalendar> allForUser(Principal principal) {
         User user = getCurrentUser(principal);
-        return olympiadForCalendarRepository.findAllByUserOrderByDateOlympiadDesc(user);
+        return olympiadForCalendarRepository.findAllByUserOrderByDateOlympiad(user);
     }
 
 

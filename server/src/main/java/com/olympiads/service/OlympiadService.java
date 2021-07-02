@@ -22,6 +22,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -57,6 +58,13 @@ public class OlympiadService {
         }
 
         return olympiadRepository.save(olympiad);
+    }
+
+    public List<Olympiad> forUser(Principal principal) {
+        User user = getCurrentUser(principal);
+        return olympiadForCalendarRepository
+                .findAllByUserOrderByDateOlympiad(user).stream()
+                .map(ofc -> olympiadRepository.getById(ofc.getOlympiadId())).collect(Collectors.toList());
     }
 
     public Optional<Olympiad> createOlympiad(OlympiadRequest olympiadRequest, Principal principal) {

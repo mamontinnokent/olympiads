@@ -1,11 +1,8 @@
 package com.olympiads.web;
 
 
-import com.olympiads.dto.CommentDTO;
 import com.olympiads.dto.OlympiadForCalendarDTO;
-import com.olympiads.entity.Olympiad;
 import com.olympiads.facade.OlympiadForCalendarFacade;
-import com.olympiads.facade.UserFacade;
 import com.olympiads.payload.response.MessageResponse;
 import com.olympiads.service.OlympiadForCalendarService;
 import com.olympiads.validation.ResponseErrorValidation;
@@ -37,13 +34,14 @@ public class OlympiadForCalendarController {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
 
-        olympiadForCalendarService.addToUser(olympiadForCalendarDTO, principal);
+        boolean isAdded = olympiadForCalendarService.addToUser(olympiadForCalendarDTO, principal);
 
-        return ResponseEntity.ok(new MessageResponse("Olympiad was added to calendar."));
+        if (isAdded) return ResponseEntity.ok(new MessageResponse("Olympiad was added."));
+        else return ResponseEntity.ok(new MessageResponse("Olympiad added yet."));
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<OlympiadForCalendarDTO>> addOfcToUser(Principal principal) {
+    public ResponseEntity<List<OlympiadForCalendarDTO>> viewForUser(Principal principal) {
         List<OlympiadForCalendarDTO> olympiads = olympiadForCalendarService.allForUser(principal).stream()
                 .map(olympiadForCalendarFacade::ofcToOfcDTO)
                 .collect(Collectors.toList());

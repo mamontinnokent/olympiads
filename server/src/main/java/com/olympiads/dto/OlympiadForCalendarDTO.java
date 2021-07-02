@@ -9,7 +9,7 @@ public class OlympiadForCalendarDTO {
 
     private Long id;
     private Long olympiadId;
-    private String olympiadName;
+    private String olympiadTitle;
     private String dateOlympiad;
 
 }
