@@ -36,7 +36,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 user.getEmail(),
                 user.getSurname(),
                 user.getPassword(),
-                user.getLessons().split(" "),
                 authorities
         );
     }

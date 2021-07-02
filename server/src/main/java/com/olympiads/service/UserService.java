@@ -6,6 +6,7 @@ import com.olympiads.entity.User;
 import com.olympiads.exceptions.UserExistException;
 import com.olympiads.payload.request.SignupRequest;
 import com.olympiads.repository.UserRepository;
+import com.olympiads.utility.Utility;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -54,18 +56,14 @@ public class UserService {
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with email " + email));
 
-        String[] birthDate = userDTO.getBirthdate().split("/");
-        LocalDate newBirthDate = LocalDate.of(Integer.parseInt(birthDate[2]), Integer.parseInt(birthDate[1]), Integer.parseInt(birthDate[0]));
-
-        user.setId(userDTO.getId());
         user.setName(userDTO.getName());
         user.setSurname(userDTO.getSurname());
         user.setPatronymic(userDTO.getPatronymic());
         user.setSchool(userDTO.getSchool());
         user.setStudyClass(userDTO.getStudyClass());
-        user.setPlaceOfLife(userDTO.getPlaceOfLife());
-        user.setBirthdate(newBirthDate);
-        user.setLessons(userDTO.getLessons());
+        user.setBirthdate(Utility.stringToTimestamp(userDTO.getBirthdate()));
+        user.setRegion(userDTO.getRegion());
+        user.setCity(userDTO.getCity());
 
         return userRepository.save(user);
     }

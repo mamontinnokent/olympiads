@@ -7,9 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -40,28 +43,30 @@ public class User {
 
     private String studyClass;
 
-    private String placeOfLife;
+    private String region;
 
-    @JsonFormat(pattern = "dd/mm/yyyy")
-    private LocalDate birthdate;
+    private String city;
 
-    @Column(length = 500)
-    private String lessons;
+    private String phoneNumber;
 
-    @Column(nullable = false, name = "role")
+    private Timestamp birthdate;
+
+    @Column(name = "role")
     private Role role;
 
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "user",
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
-    private List<OlympiadForCalendar> olympiads = new ArrayList<>();
+    private Set<OlympiadForCalendar> olympiads = new HashSet<>();
 
     @OneToMany(
             cascade = CascadeType.REFRESH,
             mappedBy = "creator",
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
     )
     private List<Olympiad> createdByMe = new ArrayList<>();
 }

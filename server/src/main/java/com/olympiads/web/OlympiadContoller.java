@@ -45,8 +45,8 @@ public class OlympiadContoller {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Olympiad> getOlympiadById(@PathVariable Long id) {
-        Olympiad olympiad = olympiadService.getOlympiadById(id);
+    public ResponseEntity<Olympiad> getOlympiadById(@PathVariable String id) {
+        Olympiad olympiad = olympiadService.getOlympiadById(Long.parseLong(id));
 
         return new ResponseEntity<>(olympiad, HttpStatus.OK);
     }
@@ -54,16 +54,15 @@ public class OlympiadContoller {
     @PostMapping("/create")
     public ResponseEntity<Object> createOlympiad(@Valid @RequestBody OlympiadRequest olympiadRequest, Principal principal) {
         Optional<Olympiad> olympiad = olympiadService.createOlympiad(olympiadRequest, principal);
+        OlympiadDTO olympiadDTO = olympiad.map(olympiadFacade::olympiadToOlympiadDTO).get();
 
-        if (!olympiad.isEmpty())
-            return new ResponseEntity<>(olympiad.get(), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(new MessageResponse("You don't have permissions or olympiad with this title already exist."), HttpStatus.BAD_REQUEST);
+        if (!olympiad.isEmpty()) return new ResponseEntity<>(olympiadDTO, HttpStatus.OK);
+        else return new ResponseEntity<>(new MessageResponse("You don't have permissions or olympiad with this title already exist."), HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponse> deleteOlympiad(@PathVariable Long id, Principal principal) {
-        boolean flag = olympiadService.deleteOlympiad(id, principal);
+    public ResponseEntity<MessageResponse> deleteOlympiad(@PathVariable String id, Principal principal) {
+        boolean flag = olympiadService.deleteOlympiad(Long.parseLong(id), principal);
 
         if (flag) return ResponseEntity.ok(new MessageResponse("Olympiad was deleted"));
         else return new ResponseEntity<>(new MessageResponse("Olympiad was deleted"), HttpStatus.BAD_REQUEST);

@@ -1,9 +1,7 @@
 package com.olympiads.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.olympiads.entity.enums.Role;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -11,16 +9,19 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
     private Long id;
     private String name;
     private String surname;
     private String patronymic;
+    private String email;
     private String school;
     private String studyClass;
-    private String placeOfLife;
+    private String region;
+    private String city;
     private String birthdate;
-    private String lessons;
+    private Role role;
 
 }

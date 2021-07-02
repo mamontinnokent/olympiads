@@ -47,7 +47,7 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @PostMapping("update/")
+    @PostMapping("/update")
     public ResponseEntity<Object> updateUser(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult, Principal principal) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
         if (!ObjectUtils.isEmpty(errors)) return errors;
@@ -59,7 +59,7 @@ public class UserController {
         return new ResponseEntity<>(userUpdated, HttpStatus.OK);
     }
 
-    @GetMapping("getAllUser/")
+    @GetMapping("/all")
     public ResponseEntity<Object> getAllUser() {
         List<UserDTO> users = userService.getAllUser().stream()
                 .map(userFacade::userToUserDTO)

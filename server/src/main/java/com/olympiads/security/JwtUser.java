@@ -17,7 +17,6 @@ public class JwtUser implements UserDetails {
     private final String email;
     private final String surname;
     private final String password;
-    private final String[] lessons;
     private final Collection<? extends GrantedAuthority> authorities;
 
 
@@ -28,7 +27,6 @@ public class JwtUser implements UserDetails {
             String email,
             String surname,
             String password,
-            String[] lessons,
             Collection<? extends GrantedAuthority> authorities
     ) {
         this.id = id;
@@ -36,7 +34,6 @@ public class JwtUser implements UserDetails {
         this.name = name;
         this.email = email;
         this.surname = surname;
-        this.lessons = lessons;
         this.password = password;
         this.authorities = authorities;
     }

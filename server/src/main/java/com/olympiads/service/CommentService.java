@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -45,6 +47,18 @@ public class CommentService {
 
         return commentRepository.save(comment);
     }
+
+    public List<Comment> getAllByOlympiadId(Long id) {
+        Olympiad olympiad = olympiadRepository.getById(id);
+        return olympiad.getComments();
+    }
+
+
+    public void deleteComment(Long commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        comment.ifPresent(commentRepository::delete);
+    }
+
 
     public User getCurrentUser(Principal principal) {
         String email = principal.getName();

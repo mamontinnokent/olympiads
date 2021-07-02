@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -25,7 +27,7 @@ public class OlympiadForCalendar {
 
     private Long olympiadId;
     private String olympiadName;
-    private LocalDate dateOlympiad;
+    private Timestamp dateOlympiad;
     
 
     @Override

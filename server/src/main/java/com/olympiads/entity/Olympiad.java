@@ -1,13 +1,13 @@
 package com.olympiads.entity;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Olympiad {
 
     @Id
@@ -37,7 +38,10 @@ public class Olympiad {
     private String link;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User creator;
+
+    private Timestamp dateOfOlympiad;
 
     @OneToMany(
             fetch = FetchType.EAGER,
@@ -45,6 +49,4 @@ public class Olympiad {
             mappedBy = "olympiad"
     )
     private List<Comment> comments;
-
-    private LocalDate dateOfOlympiads;
 }

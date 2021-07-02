@@ -1,20 +1,23 @@
 package com.olympiads.payload.request;
 
-import com.olympiads.entity.User;
 import lombok.Data;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 public class OlympiadRequest {
 
-    private Long id;
+    @NotEmpty(message = "Please enter title")
     private String title;
+    @NotEmpty(message = "Please enter caption")
     private String caption;
+    @NotEmpty(message = "Please enter location")
     private String location;
+    @NotEmpty(message = "Please enter lesson")
     private String lesson;
+    @NotEmpty(message = "Please enter link")
     private String link;
-    private User creator;
-    private LocalDate dateOfOlympiads;
+    @NotEmpty(message = "Please enter date")
+    private String dateOfOlympiads;
 
 }

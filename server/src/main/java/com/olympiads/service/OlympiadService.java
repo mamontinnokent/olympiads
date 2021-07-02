@@ -6,28 +6,37 @@ import com.olympiads.entity.User;
 import com.olympiads.entity.enums.Role;
 import com.olympiads.exceptions.OlympiadExistException;
 import com.olympiads.payload.request.OlympiadRequest;
+import com.olympiads.repository.CommentRepository;
 import com.olympiads.repository.OlympiadForCalendarRepository;
 import com.olympiads.repository.OlympiadRepository;
 import com.olympiads.repository.UserRepository;
+import com.olympiads.utility.Utility;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.*;
+import java.time.Instant;
+
 
 @Slf4j
 @Service
 public class OlympiadService {
 
     private final OlympiadRepository olympiadRepository;
+    private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final OlympiadForCalendarRepository olympiadForCalendarRepository;
 
-
-    public OlympiadService(OlympiadRepository olympiadRepository, UserRepository userRepository, OlympiadForCalendarRepository olympiadForCalendarRepository) {
+    @Autowired
+    public OlympiadService(OlympiadRepository olympiadRepository, CommentRepository commentRepository, UserRepository userRepository, OlympiadForCalendarRepository olympiadForCalendarRepository) {
         this.olympiadRepository = olympiadRepository;
+        this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.olympiadForCalendarRepository = olympiadForCalendarRepository;
     }
@@ -62,7 +71,9 @@ public class OlympiadService {
             olympiad.setLesson(olympiadRequest.getLesson());
             olympiad.setLink(olympiadRequest.getLink());
             olympiad.setCreator(currentUser);
+            olympiad.setDateOfOlympiad(Utility.stringToTimestamp(olympiadRequest.getDateOfOlympiads()));
             currentUser.getCreatedByMe().add(olympiad);
+
 
             log.info("Saving Olympiad {}", olympiad.getTitle());
             olympiadRepository.save(olympiad);
@@ -75,11 +86,6 @@ public class OlympiadService {
                 .orElseThrow(() -> new OlympiadExistException("Olympiad with id " + id + " doesn't exist."));
     }
 
-    private User getCurrentUser(Principal principal) {
-        String email = principal.getName();
-        return userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with email " + email));
-    }
 
     public boolean deleteOlympiad(Long id, Principal principal) {
         Olympiad olympiad = olympiadRepository.getById(id);
@@ -96,5 +102,11 @@ public class OlympiadService {
             return true;
         }
         return false;
+    }
+
+    private User getCurrentUser(Principal principal) {
+        String email = principal.getName();
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with email " + email));
     }
 }
