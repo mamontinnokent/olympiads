@@ -3,6 +3,7 @@ package com.olympiads.security;
 import com.olympiads.repository.UserRepository;
 import com.olympiads.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,10 +20,11 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Slf4j
-@AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
     @Override
